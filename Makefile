@@ -1,6 +1,6 @@
 # Edit the following lines for the specifics of the job to run
 JOBNAME       = india
-DESTDIR       = /scratch
+DESTDIR       = ${SCRATCH}
 
 TIMESTR       = --timesteps
 TIMEVAL	      = 500
@@ -15,7 +15,7 @@ SLURMERRFILE  = %j.err
 SLURMWALLTIME = 00:59:00
 
 GITSOFT       = pyDeltaRCM
-GITURL		  = https://github.com/DeltaRCM/pyDeltaRCM.git
+GITURL        = https://github.com/DeltaRCM/pyDeltaRCM.git
 GITBRANCH     = develop
 
 
@@ -25,11 +25,11 @@ GITBRANCH     = develop
 OUTDIR=${DESTDIR}/${JOBNAME}
 
 
-setup :
+setup : Makefile config.yaml
 	@echo "Running setup for job:" $(JOBNAME)
 	
 	@echo "Copying and modifying config.yaml file..."
-	@cat config.yaml | sed '/^out_dir:/d' | sed '1iout_dir: ${OUTDIR}'> setup/config.yaml
+	@cat config.yaml | sed '/^out_dir:/d' | sed '1i+out_dir: ${OUTDIR}/output'> setup/config.yaml
 
 	@echo "Configuring environment and setting up software..."
 	@bash setup/setup_environment.sh ${GITSOFT} ${GITURL} ${GITBRANCH} ${MODULES}
@@ -38,9 +38,9 @@ setup :
 	@bash setup/setup_launcher.sh ${JOBNAME} ${SLURMNNODES} ${SLURMNTASKS} ${SLURMQUEUE} ${SLURMOUTFILE} ${SLURMERRFILE} ${SLURMWALLTIME} ${OUTDIR}
 
 	@echo "Running setup Python script for Launcher joblist..."
-	./launcher/softwarevenv/bin/python3 setup/setup_jobfile.py ${TIMESTR} ${TIMEVAL} ${DEPOSIT}
+	./launch/softwarevenv/bin/python3 setup/setup_jobfile.py ${TIMESTR} ${TIMEVAL} ${DEPOSIT}
 
-launch :
+launch : setup
 	@echo "Launching joblist with sbatch..."
 	sbatch launch/launch_launcher.sh ${MODULES}
 

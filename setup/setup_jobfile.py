@@ -44,11 +44,11 @@ else:
 # configure the preprocessor (where matrix expansion occurs)
 tsteps_placeholder = 1
 pp = pyDeltaRCM.preprocessor.Preprocessor(
-    './config.yaml', timesteps=tsteps_placeholder, dry_run=True)
+    './setup/config.yaml', timesteps=tsteps_placeholder, dry_run=True)
 
 
 # make the Launcher job list (paramlist)
-job_list = os.path.join('.launch', 'launch_joblist')
+job_list = os.path.join('launch', 'launch_joblist')
 f = open(job_list, "w")
 
 
