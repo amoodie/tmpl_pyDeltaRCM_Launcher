@@ -9,7 +9,6 @@ Np_sed: 2000
 itermax: 2
 C0_percent: 0.05
 f_bedload: 0.5
-h0: 2
 u0: 1
 coeff_U_dep_mud: 0.5
 coeff_U_ero_mud: 1.5
@@ -24,9 +23,13 @@ save_sedflux_grids: True
 save_strata: True
 save_dt: 172800
 
-
+ensemble: 3
 matrix:
   SLR:
     - 1e-9
     - 5e-9
     - 1e-8
+  h0:
+    - 1
+    - 10
+    - 100

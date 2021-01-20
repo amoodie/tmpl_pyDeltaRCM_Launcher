@@ -4,6 +4,7 @@ DESTDIR       = /scratch
 
 TIMESTR       = --timesteps
 TIMEVAL	      = 500
+DEPOSIT       = 0
 
 MODULES       = python3
 SLURMNNODES   = 1
@@ -28,20 +29,20 @@ setup :
 	@echo "Running setup for job:" $(JOBNAME)
 	
 	@echo "Copying and modifying config.yaml file..."
-	@cat config.yaml | sed '/^out_dir:/d' | sed '1iout_dir: ${OUTDIR}'> .setup/config.yaml
+	@cat config.yaml | sed '/^out_dir:/d' | sed '1iout_dir: ${OUTDIR}'> setup/config.yaml
 
 	@echo "Configuring environment and setting up software..."
-	@bash .setup/setup_environment.sh ${GITSOFT} ${GITURL} ${GITBRANCH} ${MODULES}
+	@bash setup/setup_environment.sh ${GITSOFT} ${GITURL} ${GITBRANCH} ${MODULES}
 
 	@echo "Copying and modifying Launcher Slurm file..."
-	@bash .setup/setup_launcher.sh ${JOBNAME} ${SLURMNNODES} ${SLURMNTASKS} ${SLURMQUEUE} ${SLURMOUTFILE} ${SLURMERRFILE} ${SLURMWALLTIME} ${OUTDIR}
+	@bash setup/setup_launcher.sh ${JOBNAME} ${SLURMNNODES} ${SLURMNTASKS} ${SLURMQUEUE} ${SLURMOUTFILE} ${SLURMERRFILE} ${SLURMWALLTIME} ${OUTDIR}
 
 	@echo "Running setup Python script for Launcher joblist..."
-	./softwarevenv/bin/python3 .setup/setup_jobfile.py 
+	./launcher/softwarevenv/bin/python3 setup/setup_jobfile.py ${TIMESTR} ${TIMEVAL} ${DEPOSIT}
 
 launch :
 	@echo "Launching joblist with sbatch..."
-	sbatch .launch/launch_launcher.sh ${MODULES}
+	sbatch launch/launch_launcher.sh ${MODULES}
 
 
 cleanup : 

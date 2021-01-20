@@ -9,41 +9,34 @@ GITURL=$2
 GITBRANCH=$3
 MODULES=$4
 
-LOGFILE=.setup/setup_environment.log
+LOGFILE=setup/setup_environment.log
 touch $LOGFILE
+
 
 # load speced modules
 module load $MODULES > $LOGFILE
 
+
 # collect SOFTWARE ($GITSOFT) from GitHub
-if [[ ! -d "$GITSOFT" ]]
+if [[ ! -d "launch/$GITSOFT" ]]
 then
 	echo "$GITSOFT not found, performing clone" >> $LOGFILE
-	git clone $GITURL >> $LOGFILE
+	git clone $GITURL launch/$GITSOFT >> $LOGFILE
 else
 	echo "$GITSOFT found, performing git pull" >> $LOGFILE
-	(cd $GITSOFT && git pull origin $GITBRANCH >> $LOGFILE)
+	(cd launch/$GITSOFT && git pull origin $GITBRANCH) >> $LOGFILE
 fi
-
 
 
 # set up a virtual environment with python3
-# if [[ ! -d "venvs" ]]
-# then
-# 	# make the directory
-# 	mkdir venvs
-# fi
-# # enter directory and unset variables
-# cd venvs
 unset PYTHONHOME
 # create the environment if it does not exist
-if [[ ! -d "softwarevenv" ]]
+if [[ ! -d "launch/softwarevenv" ]]
 then
-	virtualenv --system-site-packages softwarevenv >> $LOGFILE
+	virtualenv --system-site-packages launch/softwarevenv >> $LOGFILE
 fi
 # activate environment
-. ./softwarevenv/bin/activate
-# cd ..
+. ./launch/softwarevenv/bin/activate
 # prepare and check environment
 export MPLBACKEND=Agg
 if [[ -z "$VIRTUAL_ENV" ]]; then
@@ -53,9 +46,6 @@ else
 fi
 
 
-
 # install SOFTWARE and dependencies
-cd $GITSOFT
-pip install -r requirements.txt >> $LOGFILE
-pip install -e . >> $LOGFILE
-cd ..
+pip install -r launch/$GITSOFT/requirements.txt >> $LOGFILE
+pip install -e launch/$GITSOFT/. >> $LOGFILE

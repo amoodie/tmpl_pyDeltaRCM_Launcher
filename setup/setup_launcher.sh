@@ -12,10 +12,10 @@ OUTDIR=$8
 
 
 
-cp .launch/launch_launcher.sh.template .launch/launch_launcher.sh
+cp launch/launch_launcher.sh.template launch/launch_launcher.sh
 
 # replace vars from makefile
-cd .launch
+cd launch
 sed -i "s/_jobname_/$JOBNAME/g" launch_launcher.sh
 sed -i "s/_nnodes_/$SLURMNNODES/g" launch_launcher.sh
 sed -i "s/_ntasks_/$SLURMNTASKS/g" launch_launcher.sh
