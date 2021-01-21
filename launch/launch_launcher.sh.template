@@ -16,16 +16,15 @@
 
 #------------------------------------------------------
 
-
 # setup the environment (needs to match how the software was built)
 module load python3
 module load launcher
-. ./venvs/softwarevenv/bin/activate
+. ./launch/softwarevenv/bin/activate
 export MPLBACKEND=Agg
 
 
 # configure the launcher options
 export LAUNCHER_WORKDIR=`pwd`
-export LAUNCHER_JOB_FILE=launcher_joblist
+export LAUNCHER_JOB_FILE=launch/launch_joblist
 
 $LAUNCHER_DIR/paramrun
